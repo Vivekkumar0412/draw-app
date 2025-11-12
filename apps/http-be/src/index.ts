@@ -2,7 +2,8 @@ import express from "express";
 const app = express();
 import prisma from "@repo/database";
 import jwt from "jsonwebtoken"
-const JWT_SECRET = "123456"
+import { userSchema } from "@repo/common";
+import JWT_SECRET from "@repo/common-backend";
 import jwtMiddleware  from "./middleware.js";
 app.use(express.json());
 
@@ -40,7 +41,7 @@ app.post("/signup", async (req, res) => {
 })
 
 app.post("/room",jwtMiddleware,async(req,res)=>{
-    
+
 })
 app.listen(5050, () => {
     console.log("turbo running..")

@@ -1,5 +1,5 @@
 {
-  "name": "@repo/common",
+  "name": "@repo/common-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,8 +11,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@repo/typescript-config": "*",
-    "zod": "^4.1.12"
+    "@repo/typescript-config":"*"
   },
   "exports":{
     ".":"./src/index.ts"
