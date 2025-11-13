@@ -10,13 +10,15 @@
     "dev": "npm run build && npm run start"
   },
   "dependencies": {
+    "@repo/common": "*",
+    "@repo/common-backend": "*",
     "@repo/database": "*",
     "@repo/typescript-config": "*",
     "@types/express": "^5.0.5",
-    "@repo/common":"*",
-    "@repo/common-backend":"*",
+    "@types/ws": "^8.18.1",
     "express": "^5.1.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "ws": "^8.18.3"
   },
   "keywords": [],
   "author": "",
