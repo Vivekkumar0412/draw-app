@@ -1,0 +1,9 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "strict": true,
+    "module": "NodeNext",
+    "esModuleInterop": true
+  },
+  "include": ["tailwind.config.ts", "postcss.config.js"]
+}

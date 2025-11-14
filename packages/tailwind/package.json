@@ -1,0 +1,20 @@
+{
+  "name": "@repo/tailwind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.2",
+    "@repo/typescript-config":"*"
+  }
+}
