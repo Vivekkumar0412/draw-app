@@ -1,17 +1,23 @@
-import { WebSocketServer ,WebSocket} from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import JWT_SECRET from "@repo/common-backend";
 import prisma from "@repo/database";
+
 const wss = new WebSocketServer({ port: 8080 });
 
-
-interface User{
-    ws : WebSocket,
-    room : string[],
-    userId : string
+interface CustomWebSocket extends WebSocket {
+    userId: string
 }
 
-const users :User[] = []
+interface User {
+    ws: WebSocket,
+    room: string,
+    userId: string
+}
+
+// const users: User[] = []
+
+const roomMapping: Map<string, Set<User>> = new Map();
 
 
 function checkAuthenticated(token: string): string | null {
@@ -24,8 +30,11 @@ function checkAuthenticated(token: string): string | null {
     };
     return decoded.userId
 }
-wss.on('connection', (ws, request) => {
+
+wss.on('connection', (ws: CustomWebSocket, request) => {
+    console.log("new user connected");
     const url = request.url;
+
     if (!url) {
         return
     };
@@ -36,46 +45,64 @@ wss.on('connection', (ws, request) => {
         ws.close();
         return;
     }
+    ws.userId = userId;
 
-    users.push({
-        userId,
-        ws,
-        room :[]
-    })
-    ws.on("message", async(data) => {
+    ws.on("message", async (data) => {
+
         const parsedData = JSON.parse(data as unknown as string);
-        if(parsedData.type === "join_room"){
-            const user = users.find((x)=> x.ws == ws)
-            user?.room.push(parsedData.roomId)
+
+
+        if (parsedData.type === "join_room") {
+            console.log("here");
+            if (!roomMapping.has(parsedData.roomId)) {
+                roomMapping.set(parsedData.roomId, new Set<User>())
+            }
+
+            roomMapping.get(parsedData.roomId)?.add({
+                room: parsedData.roomId,
+                userId,
+                ws,
+            });
+            console.log("room mapping is : ", roomMapping);
+            ws.send("you joined the room");
         };
 
-        if(parsedData.type == "leave_room"){
-            const user = users.find((x)=> x.ws == ws);
-            if(!user){
-                return;
-            };
-            user.room = user.room.filter((x)=> x == parsedData.room)
+        if (parsedData.type == "leave_room") {
+            roomMapping.get(parsedData.roomId)?.delete({
+                room: parsedData.roomId,
+                userId,
+                ws,
+            })
+            console.log("while leaving room mapping is : ", roomMapping);
         };
 
-        if(parsedData.type == "chat"){
+        if (parsedData.type == "chat") {
             const roomId = parsedData.roomId;
             const message = parsedData.message;
-            await prisma.chat.create({
-                data :{
-                    message,
-                    roomId : Number(roomId),
-                    userId
-                }
-            })
-            users.forEach((user)=>{
-                if(user.room.includes(parsedData.roomId)){
-                    user.ws.send(JSON.stringify({
-                        type : "chat",
+
+            try {
+                const data = await prisma.chat.create({
+                    data: {
                         message,
-                        roomId
-                    }))
-                }
-            })
+                        roomId: Number(roomId),
+                        userId
+                    }
+                })
+                console.log("after db wrote is : ", data);
+
+                const room = roomMapping.get(roomId);
+                room?.forEach((user) => {
+                    if(user.ws.readyState === WebSocket.OPEN) {
+                        user.ws.send(JSON.stringify({
+                            userId,
+                            message: parsedData.message,
+                            roomId
+                        }))
+                    }
+                })
+            } catch (err) {
+                console.error("error in db write", err);
+            }
         }
     })
 })

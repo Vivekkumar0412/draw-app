@@ -1,15 +1,15 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSocket } from "../hooks/useSocket";
 import DisplayChats from "./displayChats";
 
-export async function ChatRoomClient({message,id}:{
+export function ChatRoomClient({message,id}:{
     message : {message : string}[],
     id : string
 }) {
     const {socket,loading} = useSocket();
     const [chat,setChats] = useState(message)
+
     useEffect(()=>{
         if(socket && !loading){
 

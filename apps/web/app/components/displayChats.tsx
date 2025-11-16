@@ -16,8 +16,8 @@ export default function DisplayChats({message}:{
         <div>
             <h1>hi there iam chats array</h1>
             <div style={{display :"flex",justifyContent:"space-evenly"}}>
-                {message && message.length > 0 && message.map((msg : any)=>{
-                    return <div style={{padding:"10px",display :"flex", border:"2px solid red", justifyContent:"center",alignItems:"center",margin:"10px 10px", flexDirection:"column"}}>
+                {message && message.length > 0 && message.map((msg : any,i : number)=>{
+                    return <div key={i} style={{padding:"10px",display :"flex", border:"2px solid red", justifyContent:"center",alignItems:"center",margin:"10px 10px", flexDirection:"column"}}>
                         <h2> Id : {msg.id}</h2>
                         <h3> Mesage : {msg.message}</h3>
                         <h4>RoomId : {msg.roomId}</h4>

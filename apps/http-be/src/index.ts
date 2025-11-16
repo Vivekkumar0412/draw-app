@@ -7,11 +7,10 @@ import jwtMiddleware  from "./middleware.js";
 import http from 'http';
 import WebSocketServer from "./WebSocketServer.js";
 
-
 const app = express();
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
-// new WebSocketServer(server);
+new WebSocketServer(server);
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -154,6 +153,6 @@ app.get("/room/:slug",async(req,res)=>{
     })
 })
 
-app.listen(5050, () => {
-    console.log("turbo running..")
+server.listen(5050, () => {
+    console.log("app is running at port ", 5050);
 })

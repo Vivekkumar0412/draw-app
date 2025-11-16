@@ -10,7 +10,12 @@ async function getChats(id:any){
     return response.data.chats;
 }
 export default async function ChatRoom(roomId : {roomId : string}){
-    const chats = await getChats(roomId)
-    return <ChatRoomClient id={roomId.roomId} message={chats}/>
+    const chats = await getChats(roomId);
+    console.log("chats are : ", chats);
+    return (
+        <div>
+            <ChatRoomClient id={roomId.roomId} message={chats}/>
+        </div>
+    )
     // return <DisplayChats message={chats}/>
 }   
